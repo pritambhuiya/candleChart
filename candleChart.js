@@ -20,45 +20,44 @@ const drawCandle = (height, top, color) => {
   return style.toHtml();
 };
 
-let prevTop = 500;
-let prevHeight = 0;
-let prevColor = 'green';
-
-const createCandle = ([previous, current]) => {
+const createCandle = ([previous, current], candleStats) => {
   const difference = (current - previous).toFixed(2);
   const height = Math.abs(difference) * 35;
   const color = difference > 0 ? 'green' : 'red';
-  let top = calculateTop(color, height);
+  let top = calculateTop(color, height, candleStats);
 
-  prevColor = color;
-  prevTop = top;
-  prevHeight = height;
+  candleStats.top = top;
+  candleStats.height = height;
+  candleStats.color = color;
 
   const candle = drawCandle(height, top, color);
   return generateHtml('div', current, `style="${candle}"`);
 };
 
-const calculateTop = (color, height) => {
-  if ((prevColor + color) === 'greengreen') {
-    return prevTop - height;
+const calculateTop = (color, height, candleStats) => {
+  if ((candleStats.color + color) === 'greengreen') {
+    return candleStats.top - height;
   }
 
-  if ((prevColor + color) === 'redred') {
-    return prevTop + prevHeight;
+  if ((candleStats.color + color) === 'redred') {
+    return candleStats.top + candleStats.height;
   }
 
-  if ((prevColor + color) === 'redgreen') {
-    return prevTop + prevHeight - height;
+  if ((candleStats.color + color) === 'redgreen') {
+    return candleStats.top + candleStats.height - height;
   }
 
-  if ((prevColor + color) === 'greenred') {
-    return prevTop;
+  if ((candleStats.color + color) === 'greenred') {
+    return candleStats.top;
   }
 };
 
 const generateGraph = (report) => {
-  const candles = report.map(createCandle).join('');
   const style = new Style();
+  const candleStats = { top: 500, height: 0, color: 'green' };
+
+  const candles = report.map((candle) =>
+    createCandle(candle, candleStats)).join('');
 
   style.addAttribute('display', 'flex');
   return generateHtml('div', candles, `style="${style.toHtml()}"`);
