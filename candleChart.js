@@ -34,21 +34,21 @@ const createCandle = ([previous, current], candleStats) => {
   return generateHtml('div', current, `style="${candle}"`);
 };
 
-const calculateTop = (color, height, candleStats) => {
-  if ((candleStats.color + color) === 'greengreen') {
-    return candleStats.top - height;
+const calculateTop = (currentColor, currentHeight, { color, top, height }) => {
+  if ((color + currentColor) === 'greengreen') {
+    return top - currentHeight;
   }
 
-  if ((candleStats.color + color) === 'redred') {
-    return candleStats.top + candleStats.height;
+  if ((color + currentColor) === 'redred') {
+    return top + height;
   }
 
-  if ((candleStats.color + color) === 'redgreen') {
-    return candleStats.top + candleStats.height - height;
+  if ((color + currentColor) === 'redgreen') {
+    return top + height - currentHeight;
   }
 
-  if ((candleStats.color + color) === 'greenred') {
-    return candleStats.top;
+  if ((color + currentColor) === 'greenred') {
+    return top;
   }
 };
 
